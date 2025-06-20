@@ -44,7 +44,7 @@ dt0 <- dt0 |>
 
 dtNEW <- dtNEW |>
   mutate(
-    Date = as.Date(Date, format = "%d-%b-%y"),  # Specify format explicitly
+    Date = as.Date(Date, format = "%m/%d/%Y"),
     SO4_ugL = as.numeric(SO4_ugL)
   ) |>
   filter(!is.na(SO4_ugL))
