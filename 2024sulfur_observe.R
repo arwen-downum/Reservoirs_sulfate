@@ -1,12 +1,20 @@
 #2024 sulfate
-#Maria Popescu Sulfate and Iron concentrations
+#Maria Popescu
+#Sulfate and Iron concentrations
 
+
+#you need to run all of these (make sure you have them installed first)
+#if you don't have them installed, you'll need to run install.packages("YOUR_PACKAGE_HERE")
+#in your terminal
+
+library(dplyr)
+library(lubridate)
+library(ggplot2)
 library(dplyr)
 library(lubridate)
 
 
 #here we go
-
 #change the depth that you want to see
 #depths for fcr: 0.1, 5.0, 9.0
 #depths for bvr: 0.1, 6.0, 11.0
@@ -25,16 +33,20 @@ library(lubridate)
 #change the depth and year that you want to see
 #depths for fcr: epi: 0.1, 1.6, meta: 3.8, 5.0, hypo: 6.2, 8.0, 9.0
 
-library(ggplot2)
-library(dplyr)
-library(lubridate)
-
-dt0 <- read.csv("C:/Users/maria/OneDrive/2023 Rtudio/Looking-at-Data/sulfate2024.csv")
+dt0 <- read.csv("sulfate_first_run.csv")
+dtNEW <- read.csv("sulfate_second_run.csv")
 
 dt0 <- dt0 |>
   mutate(
   Date = as.Date(Date),
   SO4_ugL = as.numeric(SO4_ugL)
+  ) |>
+  filter(!is.na(SO4_ugL))
+
+dtNEW <- dtNEW |>
+  mutate(
+    Date = as.Date(Date, format = "%d-%b-%y"),  # Specify format explicitly
+    SO4_ugL = as.numeric(SO4_ugL)
   ) |>
   filter(!is.na(SO4_ugL))
 
@@ -56,7 +68,9 @@ ggplot(data = FCR, aes(x = Date, y = SO4_ugL, color = as.factor(Depth_m)))+
   theme_bw()+
   labs(x = "Date", y = "SO4_ugL", title = "FCR sulfate")+
   scale_color_discrete(name = "Depth (m)")+ 
-  theme(axis.text = element_text(size = 12), axis.title = element_text(size = 14),panel.spacing = unit(1, "lines"), 
+  theme(axis.text = element_text(size = 12),
+        axis.title = element_text(size = 14),
+        panel.spacing = unit(1, "lines"), 
         strip.text.x = element_text(size = 13),
         strip.text.y = element_text(size = 12))
 
