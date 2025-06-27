@@ -35,6 +35,8 @@ library(lubridate)
 dt0 <- read.csv("sulfate_first_run.csv")
 dtNEW <- read.csv("sulfate_second_run.csv")
 
+
+
 dt0 <- dt0 |>
   mutate(
   Date = as.Date(Date),
@@ -72,6 +74,64 @@ ggplot(data = FCR, aes(x = Date, y = SO4_ugL, color = as.factor(Depth_m)))+
         panel.spacing = unit(1, "lines"), 
         strip.text.x = element_text(size = 13),
         strip.text.y = element_text(size = 12))
+
+# Arwens attempt at data visulizationn
+
+
+#step one select data that I want to see Starting with site 20 
+
+#Fcr_site_20 -> sulfate_second_run$Site == 20  FIRST ATEMPT 
+
+#site20_data <- data %>% REFERENCE IDEA 
+  #filter(Site == 20)
+
+FCR_site20_data <- sulfate_second_run %>%
+  filter(Site ==20)
+
+
+# Creating PLot REFERENCE FOR CREATING PLOT SHOWN BELOW 
+#ggplot(data = FCR_site20_data, aes(x = Date, y = SO4_ugL)) +
+#geom_line() +
+  #geom_point() +  # optional: adds dots on top of the line
+  #labs(title = "Sulfate at FCR Site 20", x = "Date", y = "SO4 (µg/L)") +
+  #theme_minimal
+ggplot(data = FCR_site20_data, aes(x= Date, y = SO4_ugL)) + 
+geom_line(color = "blue", size = 1) + geom_point(color = "red", size = 2)
+
+# Setting up same steps as for site 100
+
+FCR_site_100 <- sulfate_second_run %>%
+  filter(Site==100)
+ggplot(data = FCR_site_100, aes(x= Date, y= SO4_ugL))+
+  geom_line(color = "blue", size = 1) + geom_point(color = "red", size = 2)
+
+# Setting up for site  50 
+
+FCR_site_50 -> sulfate_second_run %>%
+  filter(Site==50)
+
+# Realizing that there is an error 
+#beacuse site 50 has multipe depths, so now I ma goung to try and clasify data by depths
+
+
+Site_shallow_data <-  sulfate_second_run %>%
+  filter(Depth_m== "0.1")
+ # tryiing to fugur eout why my data wont display and  blank graph is created 
+# had the same issue with my first graphs
+#ggplot(data = Site_shallow_data, aes(x= Date, y= SO4_ugL))+
+  #geom_line(color = "blue", size = 1) + geom_point(color = "red", size = 2) +ylim(900,3000)
+
+
+#ggplot(data = Site_shallow_data, aes(x = Date, y = SO4_ugL)) +
+  #geom_line(color = "blue", size = 1) +
+ # geom_point(color = "red", size = 2) +
+  #coord_cartesian(ylim = c(900, 3000))
+
+ggplot(data = Site_shallow_data, aes(x = SO4_ugL, y = Date)) +
+  geom_line(color = "blue", size = 1) +
+  geom_point(color = "red", size = 2) +
+  coord_cartesian(ylim = c(0, 1000))
+
 
 #plotBVR sulfate
 #depths for bvr: epi: 0.1, meta: 3.0 hypo: 6.0, 9.0
