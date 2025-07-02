@@ -32,50 +32,67 @@ library(lubridate)
 #change the depth and year that you want to see
 #depths for fcr: epi: 0.1, 1.6, meta: 3.8, 5.0, hypo: 6.2, 8.0, 9.0
 
+library(readr)
+sulfate_first_run <- read_csv("sulfate_first_run.csv")
+View(sulfate_first_run)
+
+library(readr)
+sulfate_second_run <- read_csv("sulfate_second_run.csv")
+View(sulfate_second_run)
+
+
 dt0 <- read.csv("sulfate_first_run.csv")
 dtNEW <- read.csv("sulfate_second_run.csv")
 
+library(readr)
+sulfate_second_run <- read_csv("sulfate_second_run.csv")
+View(sulfate_second_run)
 
 
-dt0 <- dt0 |>
-  mutate(
-  Date = as.Date(Date),
-  SO4_ugL = as.numeric(SO4_ugL)
-  ) |>
-  filter(!is.na(SO4_ugL))
+#tRYING TO FIX ERROS 
+#dt0 <- dt0 |>
+  #mutate(
+  #Date = as.Date(Date),
+  #SO4_ugL = as.numeric(SO4_ugL)
+ # ) |>
+ # filter(!is.na(SO4_ugL))
 
-dtNEW <- dtNEW |>
-  mutate(
-    Date = as.Date(Date, format = "%m/%d/%Y"),
-    SO4_ugL = as.numeric(SO4_ugL)
-  ) |>
-  filter(!is.na(SO4_ugL))
+##  Date = as.Date(Date, format = "%m/%d/%Y"),
+    #SO4_ugL = as.numeric(SO4_ugL)
+ # ) |>
+ # filter(!is.na(SO4_ugL))
 
 #plotting FCR sulfate  
-FCR <- dt0|>
-  filter(Reservoir == "FCR")%>%
-  mutate(limnion = case_when(
-    Depth_m <= 1.6 ~ "Epilimnion",
-    Depth_m > 1.6 & Depth_m < 6 ~ "Metalimnion",
-    Depth_m >= 6 ~ "Hypolimnion"
-  )) %>%
-  mutate(limnion = factor(limnion, levels = c("Epilimnion", "Metalimnion", "Hypolimnion")))
+#FCR <- dt0|>
+ # filter(Reservoir == "FCR")%>%
+  #mutate(limnion = case_when(
+    #Depth_m <= 1.6 ~ "Epilimnion",
+    #Depth_m > 1.6 & Depth_m < 6 ~ "Metalimnion",
+    #Depth_m >= 6 ~ "Hypolimnion"
+  #)) %>%
+ # mutate(limnion = factor(limnion, levels = c("Epilimnion", "Metalimnion", "Hypolimnion")))
 
 
 #plotFCR sulfate concentrations
-ggplot(data = FCR, aes(x = Date, y = SO4_ugL, color = as.factor(Depth_m)))+
-  geom_point()+
-  facet_grid(rows = vars(limnion), scales = "free_y")+
-  theme_bw()+
-  labs(x = "Date", y = "SO4_ugL", title = "FCR sulfate")+
-  scale_color_discrete(name = "Depth (m)")+ 
-  theme(axis.text = element_text(size = 12),
-        axis.title = element_text(size = 14),
-        panel.spacing = unit(1, "lines"), 
-        strip.text.x = element_text(size = 13),
-        strip.text.y = element_text(size = 12))
+#ggplot(data = FCR, aes(x = Date, y = SO4_ugL, color = as.factor(Depth_m)))+
+ # geom_point()+
+  #facet_grid(rows = vars(limnion), scales = "free_y")+
+  #theme_bw()+
+  #labs(x = "Date", y = "SO4_ugL", title = "FCR sulfate")+
+ # scale_color_discrete(name = "Depth (m)")+ 
+  #theme(axis.text = element_text(size = 12),
+        #axis.title = element_text(size = 14),
+       # panel.spacing = unit(1, "lines"), 
+        #strip.text.x = element_text(size = 13),
+        #strip.text.y = element_text(size = 12))
+library(readr)
+sulfate_second_run <- read_csv("sulfate_second_run.csv")
+View(sulfate_second_run)
 
 # Arwens attempt at data visulizationn
+
+install.packages("ggpubr")
+library(ggpubr)
 
 
 #step one select data that I want to see Starting with site 20 
@@ -95,15 +112,35 @@ FCR_site20_data <- sulfate_second_run %>%
   #geom_point() +  # optional: adds dots on top of the line
   #labs(title = "Sulfate at FCR Site 20", x = "Date", y = "SO4 (µg/L)") +
   #theme_minimal
-ggplot(data = FCR_site20_data, aes(x= Date, y = SO4_ugL)) + 
-geom_line(color = "blue", size = 1) + geom_point(color = "red", size = 2)
+ggplot(data = FCR_site20_data, aes(x= Date...4, y = SO4)) + 
+geom_line(color = "blue", size = 1) + geom_point(color = "red", size = 2) +
+  geom_smooth(method = "lm", color = "black", se = TRUE) +
+  stat_regline_equation(
+    aes(label = paste(..eq.label.., ..rr.label.., sep = "~~~")),
+    #label.x = 2024,  # Adjust this if needed
+    #label.y = 1250   # Adjust this if needed
+  )
+
+rlang::last_trace()
 
 # Setting up same steps as for site 100
 
 FCR_site_100 <- sulfate_second_run %>%
   filter(Site==100)
-ggplot(data = FCR_site_100, aes(x= Date, y= SO4_ugL))+
-  geom_line(color = "blue", size = 1) + geom_point(color = "red", size = 2)
+
+nrow(FCR_site_100)
+ggplot(data = FCR_site_100, aes(x= Date...4, y= SO4)) + geom_point(color = "red", size = 2) +
+  geom_smooth(method = "lm", color = "black", se = TRUE)
+
+ggplot(data = FCR_site_100, aes(x = Date...4, y = SO4)) +
+  geom_point(color = "magenta", size = 2) +
+  geom_line(color = "hotpink", size = 1) +
+  geom_smooth(method = "lm", color = "black", se = TRUE) +
+  stat_regline_equation(
+    aes(label = paste(..eq.label.., ..rr.label.., sep = "~~~")),
+    #label.x = 2024,  # Adjust this if needed
+    #label.y = 1250   # Adjust this if needed
+  )
 
 # Setting up for site  50 
 
@@ -115,7 +152,7 @@ FCR_site_50 -> sulfate_second_run %>%
 
 
 Site_shallow_data <-  sulfate_second_run %>%
-  filter(Depth_m== "0.1")
+  filter(Depth_m== "0.1m")
  # tryiing to fugur eout why my data wont display and  blank graph is created 
 # had the same issue with my first graphs
 #ggplot(data = Site_shallow_data, aes(x= Date, y= SO4_ugL))+
@@ -127,10 +164,55 @@ Site_shallow_data <-  sulfate_second_run %>%
  # geom_point(color = "red", size = 2) +
   #coord_cartesian(ylim = c(900, 3000))
 
-ggplot(data = Site_shallow_data, aes(x = SO4_ugL, y = Date)) +
-  geom_line(color = "blue", size = 1) +
+nrow(Site_shallow_data)
+
+ggplot(data = Site_shallow_data, aes(x = Date, y = SO4_ugL)) +
   geom_point(color = "red", size = 2) +
-  coord_cartesian(ylim = c(0, 1000))
+  coord_cartesian(ylim = c(0, 2000))
+# Sucessfully Created on a Plot for a specific depth. Now I am going to try and create a graph with all 
+# classified depths 
+# this is my key for the depths #depths for fcr: epi: 0.1, 1.6, meta: 3.8, 5.0, hypo: 6.2, 8.0, 9.0
+#Epilimnion", "Metalimnion", "Hypolimnion")))
+unique(sulfate_second_run$Depth_m)
+
+sulfate_second_run$Depth_m <- gsub("[^0-9.]", "", sulfate_second_run$Depth_m)
+
+sulfate_second_run$Depth_m <- as.numeric(sulfate_second_run$Depth_m)
+
+unique(sulfate_second_run$Depth_m)
+str(sulfate_second_run$Depth_m)
+
+Epilimnion_data <- sulfate_second_run %>% 
+  filter(Depth_m%in% c("0.1m","1.6m"))
+nrow(Epilimnion_data)
+
+Metalimnion_data <-sulfate_second_run%>%
+  filter(Depth_m%in% c("3.8m","5.0m"))
+
+nrow(Metalimnion_data)
+
+Hypolimnion_data <- sulfate_second_run%>%
+  filter(Depth_m%in% c("6.2m","8.0m","9.0m"))
+
+ggplot(data =  Epilimnion_data, aes(x = Date, y = SO4_ugL, group = 1)) +  geom_point(color = "red", size = 2)+
+  coord_cartesian(ylim = c(0, 2000)) + geom_line(color = "hotpink", size = 1) +
+  geom_smooth(method = "lm", color = "black", se = TRUE) +
+  coord_cartesian(ylim = c(0, 2000))
+
+ggplot(data = Metalimnion_data, aes(x= Date, y= SO4_ugL))+ geom_point(color = "red", size = 2)+
+  coord_cartesian(ylim = c(0, 2000))
+
+ggplot(data = Hypolimnion_data, aes(x=Date, y=SO4_ugL))+ geom_point(color = "red", size = 2)+
+  coord_cartesian(ylim = c(0, 2000))
+
+#Classifyiny my three sites into differnet data sets 
+
+
+# nrow function checks if y dat ste is empty 
+nrow(Epilimnion_data)
+
+unique(sulfate_second_run$Depth_m)
+
 
 
 #plotBVR sulfate
