@@ -152,7 +152,7 @@ FCR_site_50 -> sulfate_second_run %>%
 
 
 Site_shallow_data <-  sulfate_second_run %>%
-  filter(Depth_m== "0.1m")
+  filter(Depth_m== 0.1)
  # tryiing to fugur eout why my data wont display and  blank graph is created 
 # had the same issue with my first graphs
 #ggplot(data = Site_shallow_data, aes(x= Date, y= SO4_ugL))+
@@ -166,7 +166,7 @@ Site_shallow_data <-  sulfate_second_run %>%
 
 nrow(Site_shallow_data)
 
-ggplot(data = Site_shallow_data, aes(x = Date, y = SO4_ugL)) +
+ggplot(data = Site_shallow_data, aes(x = Date...4, y = SO4)) +
   geom_point(color = "red", size = 2) +
   coord_cartesian(ylim = c(0, 2000))
 # Sucessfully Created on a Plot for a specific depth. Now I am going to try and create a graph with all 
@@ -183,7 +183,7 @@ unique(sulfate_second_run$Depth_m)
 str(sulfate_second_run$Depth_m)
 
 Epilimnion_data <- sulfate_second_run %>% 
-  filter(Depth_m%in% c("0.1m","1.6m"))
+  filter(Depth_m%in% c(0.1,1.6))
 nrow(Epilimnion_data)
 
 Metalimnion_data <-sulfate_second_run%>%
@@ -194,16 +194,85 @@ nrow(Metalimnion_data)
 Hypolimnion_data <- sulfate_second_run%>%
   filter(Depth_m%in% c("6.2m","8.0m","9.0m"))
 
-ggplot(data =  Epilimnion_data, aes(x = Date, y = SO4_ugL, group = 1)) +  geom_point(color = "red", size = 2)+
-  coord_cartesian(ylim = c(0, 2000)) + geom_line(color = "hotpink", size = 1) +
-  geom_smooth(method = "lm", color = "black", se = TRUE) +
-  coord_cartesian(ylim = c(0, 2000))
+# Prepping data for addding r2 value 
 
-ggplot(data = Metalimnion_data, aes(x= Date, y= SO4_ugL))+ geom_point(color = "red", size = 2)+
+
+
+#ggplot(data =  Epilimnion_data, aes(x = Date...4, y = SO4, group = 1,)) +  geom_point(color = "red", size = 2)+
+  #coord_cartesian(ylim = c(0, 2000)) +
+  #geom_smooth(method = "lm", color = "black", se = FALSE) +
+  #coord_cartesian(ylim = c(0, 2000)) +  labs(
+    #title = "Trends in Sulfate (SO4) Over Time In The Epilimnion",
+    #x = "Date",
+   # y = "Sulfate (µg/L)"
+#  ) + stat_regline_equation(
+    #aes(label = paste(..eq.label.., ..rr.label.., sep = "~~~")),
+    #)
+    #label.y = 1800 +
+  #theme(plot.title = element_text(hjust = 0.5))
+    
+ggplot(data = Epilimnion_data, aes(x = Date...4, y = SO4, group = 1)) +  
+      geom_point(color = "red", size = 2) +
+      geom_smooth(method = "lm", color = "black", se = FALSE) +
+      coord_cartesian(ylim = c(0, 2000)) +
+      labs(
+        title = "Trends in Sulfate (SO4) Over Time In The Epilimnion",
+        x = "Date",
+        y = "Sulfate (µg/L)"
+      ) +
+      stat_regline_equation(
+        aes(label = paste(..eq.label.., ..rr.label.., sep = "~~~")),
+        label.y = 1800
+      ) +
+      theme(plot.title = element_text(hjust = 0.5))
+    
+    
+  
+
+my_plot <-ggplot(data = Metalimnion_data, aes(x= Date, y= SO4_ugL, group = 1))+ geom_point(color = "red", size = 2)+
+  geom_smooth(method = "lm", color = "black", se = FALSE) +
   coord_cartesian(ylim = c(0, 2000))
+labs(
+  title = "Trends in Sulfate (SO4) Over Time In The Epilimnion",
+  x = "Date",
+  y = "Sulfate (µg/L)"
+) +
+  stat_regline_equation(
+    aes(label = paste(..eq.label.., ..rr.label.., sep = "~~~")),
+    label.y = 1800
+  ) +
+  theme(plot.title = element_text(hjust = 0.5))
+
+ggplot(data = Metalimnion_data, aes(x = Date, y = SO4_ugL, group = 1)) +  
+  geom_point(color = "red", size = 2) +
+  geom_smooth(method = "lm", color = "black", se = FALSE) +
+  coord_cartesian(ylim = c(0, 2000)) +
+  labs(
+    title = "Trends in Sulfate (SO4) Over Time In The Metalimnion",
+    x = "Date",
+    y = "Sulfate (µg/L)"
+  ) +
+  stat_regline_equation(
+    aes(label = paste(..eq.label.., ..rr.label.., sep = "~~~")),
+    label.y = 1800
+  ) +
+  theme(plot.title = element_text(hjust = 0.5))
 
 ggplot(data = Hypolimnion_data, aes(x=Date, y=SO4_ugL))+ geom_point(color = "red", size = 2)+
-  coord_cartesian(ylim = c(0, 2000))
+  geom_smooth(method = "lm", color = "black", se = FALSE) +
+  coord_cartesian(ylim = c(0, 2000)) +
+  labs(
+    title = "Trends in Sulfate (SO4) Over Time In The Hypolimnion",
+    x = "Date",
+    y = "Sulfate (µg/L)"
+  ) +
+  stat_regline_equation(
+    aes(label = paste(..eq.label.., ..rr.label.., sep = "~~~")),
+    label.y = 1800
+  ) +
+  theme(plot.title = element_text(hjust = 0.5))
+
+
 
 #Classifyiny my three sites into differnet data sets 
 
